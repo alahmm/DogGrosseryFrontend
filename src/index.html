@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Dog Pictures</title>
+</head>
+<body>
+
+<h1>Dog Glossary</h1>
+
+<button id="button-random-dog">Show Random Dog</button>
+
+<div id="content"></div>
+
+<script>
+    // Here Dog IPA is used https://dog.ceo/dog-api/documentation/
+    // Function to fetch and display a random dog image
+    function getRandomDog() {
+        // API endpoint for random dog image
+        const apiUrl = 'https://dog.ceo/api/breeds/image/random';
+
+        // Fetch data from the API
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                // Check if the response status is success
+                if (data.status === 'success') {
+                    // Get the image URL
+                    const imageUrl = data.message;
+
+                    // Display the image in the content div
+                    document.getElementById('content').innerHTML = `<img src="${imageUrl}" alt="Random Dog">`;
+                } else {
+                    // Display an error message if the request fails
+                    document.getElementById('content').innerHTML = '<p>Failed to fetch random dog image.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                // Display an error message if there is an error during the fetch
+                document.getElementById('content').innerHTML = '<p>Error fetching data. Please try again.</p>';
+            });
+    }
+
+    // Attach the getRandomDog function to the button click event
+    document.getElementById('button-random-dog').addEventListener('click', getRandomDog);
+
+    // Call getRandomDog initially to display a random dog image on page load
+    getRandomDog();
+</script>
+
+</body>
+</html>
