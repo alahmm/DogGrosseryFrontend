@@ -14,6 +14,8 @@
 <input type="text" id="input-breed" placeholder="Enter a breed">
 
 <button id="button-show-breed">Show Breed</button>
+<button id="button-show-sub-breed">Show Sub-Breed</button>
+
 <div id="content"></div>
 
 <script>
@@ -75,6 +77,40 @@
                 }
             })
             .catch(error => console.error('Error fetching data:', error));
+    });
+    document.getElementById('button-show-sub-breed').addEventListener('click', function() {
+        // Clear previous content
+        document.getElementById('content').innerHTML = '';
+
+        // Get the input breed name
+        const breedName = document.getElementById('input-breed').value.toLowerCase();
+
+        // Fetch data from the DOG API for sub-breeds
+        fetch(`https://dog.ceo/api/breed/${breedName}/list`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "error") {
+                    // Handle unknown input
+                    const notFoundParagraph = document.createElement('p');
+                    notFoundParagraph.textContent = 'Breed not found!';
+                    document.getElementById('content').appendChild(notFoundParagraph);
+                } else if (data.message.length === 0) {
+                    // Handle case when there are no sub-breeds
+                    const noSubBreedsParagraph = document.createElement('p');
+                    noSubBreedsParagraph.textContent = 'No sub-breeds found!';
+                    document.getElementById('content').appendChild(noSubBreedsParagraph);
+                } else {
+                    // Display sub-breeds as a list
+                    const subBreedList = document.createElement('ol');
+                    data.message.forEach(subBreed => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = subBreed;
+                        subBreedList.appendChild(listItem);
+                    });
+                    document.getElementById('content').appendChild(subBreedList);
+                }
+            })
+            .catch(error => console.error('Error fetching sub-breeds data:', error));
     });
 </script>
 
