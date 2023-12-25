@@ -15,6 +15,7 @@
 
 <button id="button-show-breed">Show Breed</button>
 <button id="button-show-sub-breed">Show Sub-Breed</button>
+<button id="button-show-all">Show All Breeds</button>
 
 <div id="content"></div>
 
@@ -111,6 +112,46 @@
                 }
             })
             .catch(error => console.error('Error fetching sub-breeds data:', error));
+    });
+    document.getElementById('button-show-all').addEventListener('click', function() {
+        // Clear previous content
+        document.getElementById('content').innerHTML = '';
+
+        // Fetch data from the DOG API for all breeds
+        fetch('https://dog.ceo/api/breeds/list/all')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "error") {
+                    // Handle error in fetching data
+                    const errorParagraph = document.createElement('p');
+                    errorParagraph.textContent = 'Error fetching breed data!';
+                    document.getElementById('content').appendChild(errorParagraph);
+                } else {
+                    // Display all breeds as an ordered list
+                    const breedList = document.createElement('ol');
+                    for (const breed in data.message) {
+                        const breedItem = document.createElement('li');
+                        breedItem.textContent = breed;
+
+                        // Check if there are sub-breeds
+                        const subBreeds = data.message[breed];
+                        if (subBreeds.length > 0) {
+                            const subBreedList = document.createElement('ul');
+                            subBreeds.forEach(subBreed => {
+                                const subBreedItem = document.createElement('li');
+                                subBreedItem.textContent = subBreed;
+                                subBreedList.appendChild(subBreedItem);
+                            });
+                            breedItem.appendChild(subBreedList);
+                        }
+
+                        breedList.appendChild(breedItem);
+                    }
+
+                    document.getElementById('content').appendChild(breedList);
+                }
+            })
+            .catch(error => console.error('Error fetching all breeds data:', error));
     });
 </script>
 
