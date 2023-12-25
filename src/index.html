@@ -10,7 +10,10 @@
 <h1>Dog Glossary</h1>
 
 <button id="button-random-dog">Show Random Dog</button>
+<label for="input-breed">Enter a breed:</label>
+<input type="text" id="input-breed" placeholder="Enter a breed">
 
+<button id="button-show-breed">Show Breed</button>
 <div id="content"></div>
 
 <script>
@@ -48,6 +51,31 @@
 
     // Call getRandomDog initially to display a random dog image on page load
     getRandomDog();
+    document.getElementById('button-show-breed').addEventListener('click', function() {
+        // Clear previous content
+        document.getElementById('content').innerHTML = '';
+
+        // Get the input breed name
+        const breedName = document.getElementById('input-breed').value.toLowerCase();
+
+        // Fetch data from the DOG API
+        fetch(`https://dog.ceo/api/breed/${breedName}/images/random`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "error") {
+                    // Handle unknown input
+                    const notFoundParagraph = document.createElement('p');
+                    notFoundParagraph.textContent = 'Breed not found!';
+                    document.getElementById('content').appendChild(notFoundParagraph);
+                } else {
+                    // Display the image
+                    const imgElement = document.createElement('img');
+                    imgElement.src = data.message;
+                    document.getElementById('content').appendChild(imgElement);
+                }
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    });
 </script>
 
 </body>
